@@ -2,18 +2,16 @@
     <h1 class="text-center">Listado de usuarios</h1>
     <div class="row">
         <div class="col">
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                </div>
                 <div>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuario" (click)="abrirAgregarUsuario()">Agregar Usuario</button>
                     </div>
                     @if (btnAgregarUsuario) {
-                        <app-userform (newUserEventeEmmiter)="addUser($event)" (openEventEmmiter)="abrirAgregarUsuario()"></app-userform>
+                        <app-userform [user]="userSelected" (newUserEventeEmmiter)="addUser($event)" (openEventEmmiter)="abrirAgregarUsuario()"></app-userform>
                     }
                 </div>
             </div>
-            <app-user [users]="users"></app-user>
+            <app-user [users]="users" (idUserEventEmmiter)="removeUser($event)" (selectedUserEventEmitter)="setSeletedUser($event)" (openEventEmmiter)="abrirAgregarUsuario()"></app-user>
         </div>
     </div>
 

@@ -1,6 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UserAppComponent } from '../user-app/user-app.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { User } from '../../models/user';
 import { CommonModule } from '@angular/common';
 
@@ -19,8 +19,13 @@ export class UserformComponent{
     this.openEventEmmiter.emit();
   }
 
+ 
+
+
+
   //declaramos una variable del tipo user
-  user: User;
+  //tambien se usa para recibir el user que viene del editar
+  @Input() user: User;
 
   //se usara para pasar al padre el usuario creado quu seria user-app
   @Output() newUserEventeEmmiter: EventEmitter<User> = new EventEmitter();
@@ -31,9 +36,17 @@ export class UserformComponent{
   }
 
   //con este metodo al darle guardar enviara el evento con el user creado al padre(user-app)
-  onSubmit(): void {
-    this.newUserEventeEmmiter.emit(this.user);
+  onSubmit(userForm: NgForm): void {
+    if(userForm.valid){
+      this.newUserEventeEmmiter.emit(this.user);
     console.log(this.user);
+    }
+    userForm.reset();
+    userForm.resetForm();
+  }
+
+  cerrarFormulario(): void{
+    this.openEventEmmiter.emit();
   }
 
 }

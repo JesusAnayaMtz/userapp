@@ -19,8 +19,8 @@
                     <td>{{user.lastName}}</td>
                     <td>{{user.email}}</td>
                     <td>{{user.userName}}</td>
-                    <td><button type="button" class="btn btn-warning">Editar</button></td>
-                    <td><button class="btn btn-danger"  type="submit">Eliminar</button></td>
+                    <td><button class="btn btn-warning" (click)="onSelectedUser(user)" (click)="abrirAgregarUsuario()">Editar</button></td>
+                    <td><button class="btn btn-danger" (click)="onRemoveUSer(user.id)">Eliminar</button></td>
                 </tr>
             }
         </tbody>
