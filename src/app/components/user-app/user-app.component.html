@@ -3,14 +3,15 @@
     <div class="row">
         <div class="col">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="abrirModal()"> Agregar Usuario</button>
                 </div>
                 <div>
-                    @if (abrirModal) {
-                        <app-userform></app-userform>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuario" (click)="abrirAgregarUsuario()">Agregar Usuario</button>
+                    </div>
+                    @if (btnAgregarUsuario) {
+                        <app-userform (newUserEventeEmmiter)="addUser($event)" (openEventEmmiter)="abrirAgregarUsuario()"></app-userform>
                     }
                 </div>
-
             </div>
             <app-user [users]="users"></app-user>
         </div>

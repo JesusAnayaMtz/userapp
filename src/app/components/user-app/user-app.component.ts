@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-user-app',
   standalone: true,
-  imports: [UserComponent, UserformComponent, CommonModule],
+  imports: [UserComponent, UserformComponent],
   templateUrl: './user-app.component.html',
   styleUrl: './user-app.component.css'
 })
@@ -28,8 +28,15 @@ export class UserAppComponent implements OnInit{
     this.service.findAll().subscribe(users => this.users = users)
   }
 
-  abrirModal(){
-    this.btnAgregarUsuario = !this.abrirModal;
+  abrirAgregarUsuario(){
+    this.btnAgregarUsuario = !this.btnAgregarUsuario;
+  }
+
+
+  //este evento se usara para recibir el usuario nuevo que viene del modal userform
+  addUser(user: User){
+    //creamos una nueva lista dispersando los datos y le agregamos el nuevo usuario
+    this.users = [... this.users, {... user, id: new Date().getTime()}];
   }
 
 }
