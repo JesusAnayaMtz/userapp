@@ -1,11 +1,14 @@
-import { Component, EventEmitter, Input, input, Output } from '@angular/core';
+import { Component, EventEmitter, Input } from '@angular/core';
 import { User } from '../../models/user';
 import Swal from 'sweetalert2'
+import { Router, RouterModule } from '@angular/router';
+import { UserService } from '../../services/user.service';
+import { SharingDataService } from '../../services/sharing-data.service';
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
@@ -13,13 +16,21 @@ export class UserComponent {
 
 
   //colocamos input ya que los usarios vienen del padre que es user-app se tiene que importar este componente en el padre
-  @Input() users: User[] = [];
+  users: User[] = [];
 
-  //creamos el eventmitter para trasmitir al componente padre con output
-  @Output() idUserEventEmmiter = new EventEmitter();
 
-  //emitimos el valor al padre que es user-app
-  @Output() selectedUserEventEmitter = new EventEmitter();
+
+//dentro del cnstructor capturamos los users que vienen del padre y que pasan por navbar y los inyectamos con router
+constructor(private router: Router, private service: UserService, private sharinData: SharingDataService){
+  //validamos que si existe el state
+  if(this.router.getCurrentNavigation()?.extras.state){
+    this.users = this.router.getCurrentNavigation()?.extras.state!['users'];
+  } else {
+    //esto esn un observabke hay que suscribirse esto siempre vendra del back
+    this.service.findAll().subscribe(users => this.users =users)
+  }
+  
+}
 
   //creamos el metodo que se usara para eliminar el cual se emitira con el event emiter
   onRemoveUSer(id: number): void{
@@ -35,7 +46,7 @@ export class UserComponent {
       confirmButtonText: "Si, eliminar!"
     }).then((result) => {
       if (result.isConfirmed) {
-        this.idUserEventEmmiter.emit(id);
+        this.sharinData.idUserEventEmmiter.emit(id);
         Swal.fire({
           title: "Eliminado!",
           text: "El usuario ah sido eliminado",
@@ -55,14 +66,9 @@ export class UserComponent {
 
 
   onSelectedUser(user: User): void {
-    this.selectedUserEventEmitter.emit(user);
+    //this.sharinData.selectedUserEventEmitter.emit(user);
+    this.router.navigate(['/users/edit', user.id], {state: {user}});
   }
 
-  //se usa el mismo even emitter para abrir el modal y poder editar
-  @Output() openEventEmmiter = new EventEmitter();
-
-  abrirAgregarUsuario(): void{
-    this.openEventEmmiter.emit();
-  }
 
 }

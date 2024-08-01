@@ -1,10 +1,9 @@
-  <div class="modal" style="display: block;" tabindex="-1">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{{(user.id > 0)? 'Editar Usuario' : 'Agregar Usuario'}}</h5>
+  <div class="card">
+        <div class="card-content">
+            <div class="card-header">
+                <h5 class="card-title">{{(user.id > 0)? 'Editar Usuario' : 'Agregar Usuario'}}</h5>
             </div>
-            <div class="modal-body">
+            <div class="card-body">
               <form (ngSubmit)="onSubmit(userForm)"  #userForm="ngForm">
                 <div class="mb-3">
                   <label class="col-form-label">Nombre:</label>
@@ -76,12 +75,12 @@
                     }
                   }
                 </div>
+                <div>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="limpiarFormulario(userForm)">Limpiar</button>
+                  <button type="submit" class="btn btn-primary" (click)="onSubmit(userForm)" [disabled]="userForm.invalid">{{(user.id > 0)? 'Actualizar' : 'Guardar'}}</button>
+              </div>
               </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="cerrarFormulario()">Cancelar</button>
-                <button type="submit" class="btn btn-primary" (click)="onSubmit(userForm)" (click)="abrirAgregarUsuario()" [disabled]="userForm.invalid">{{(user.id > 0)? 'Actualizar' : 'Guardar'}}</button>
-            </div>
+            
         </div>
-    </div>
-  </div>
+</div>
