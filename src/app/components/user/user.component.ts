@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { User } from '../../models/user';
 import Swal from 'sweetalert2'
 import { Router, RouterModule } from '@angular/router';
@@ -12,7 +12,7 @@ import { SharingDataService } from '../../services/sharing-data.service';
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
-export class UserComponent {
+export class UserComponent implements OnInit{
 
 
   //colocamos input ya que los usarios vienen del padre que es user-app se tiene que importar este componente en el padre
@@ -22,15 +22,17 @@ export class UserComponent {
 
 //dentro del cnstructor capturamos los users que vienen del padre y que pasan por navbar y los inyectamos con router
 constructor(private router: Router, private service: UserService, private sharinData: SharingDataService){
-  //validamos que si existe el state
   if(this.router.getCurrentNavigation()?.extras.state){
     this.users = this.router.getCurrentNavigation()?.extras.state!['users'];
-  } else {
-    //esto esn un observabke hay que suscribirse esto siempre vendra del back
-    this.service.findAll().subscribe(users => this.users =users)
   }
-  
 }
+  ngOnInit(): void {
+    //estpo es  para optimizar y solo consulte el find all de vez en cuando sea igual a 0 null un undefined lo bsque en la base d datos y si no lo obtenga del state de angular
+    if(this.users == undefined || this.users == null || this.users.length == 0){
+      this.service.findAll().subscribe(users => this.users =users)
+    }
+    
+  }
 
   //creamos el metodo que se usara para eliminar el cual se emitira con el event emiter
   onRemoveUSer(id: number): void{
@@ -67,7 +69,7 @@ constructor(private router: Router, private service: UserService, private sharin
 
   onSelectedUser(user: User): void {
     //this.sharinData.selectedUserEventEmitter.emit(user);
-    this.router.navigate(['/users/edit', user.id], {state: {user}});
+    this.router.navigate(['/users/edit', user.id]);
   }
 
 

@@ -8,6 +8,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { routes } from '../../app.routes';
+import { state } from '@angular/animations';
 
 @Component({
   selector: 'app-user-app',
@@ -56,9 +57,12 @@ export class UserAppComponent implements OnInit{
     this.sharingDate.newUserEventeEmmiter.subscribe(user =>{
       //validamos que el id sea mayor a 0
       if(user.id > 0){
-        //obtenemos la lista de usuarios y con map nos permite modificar un arreglo y crear un nuevo arreglo ya con los datos modificados
+        //utilizamor el service para llamar al back y nos suscribimos
+        this.service.update(user).subscribe(userUpdate => {
+                  //obtenemos la lista de usuarios y con map nos permite modificar un arreglo y crear un nuevo arreglo ya con los datos modificados
         // y con una exprecion lamda y operador ternario  validamos que el usuario exista y sea igual a uno del arreglo y los modificamos
-        this.users = this.users.map(u => (u.id == user.id) ? {... user} : u); 
+          this.users = this.users.map(u => (u.id == userUpdate.id) ? {... userUpdate} : u); 
+          this.router.navigate(['/users'], {state: {users: this.users}})
         Swal.fire({
           position: "center",
           icon: "success",
@@ -66,9 +70,14 @@ export class UserAppComponent implements OnInit{
           showConfirmButton: false,
           timer: 2000
         });
+        })
       }else{
-        //creamos una nueva lista dispersando los datos y le agregamos el nuevo usuario
-      this.users = [... this.users, {... user, id: new Date().getTime()}];
+        //lamamos al service y al metodo create y nos suscribimos y creamos un nuevo usuario
+        this.service.create(user).subscribe(userNew => {
+          //creamos una nueva lista dispersando los datos y le agregamos el nuevo usuario
+          this.users = [... this.users, {... userNew}];
+          //aqui tambien al crear un usuario nos redirige a otro
+      this.router.navigate(['/users'], {state: {users: this.users}})
       Swal.fire({
         position: "center",
         icon: "success",
@@ -76,11 +85,8 @@ export class UserAppComponent implements OnInit{
         showConfirmButton: false,
         timer: 2000
       });
+        })
       }
-      //aqui tambien al crear un usuario nos redirige a otro
-      this.router.navigate(['/users'], {state: {users : this.users}})
-      //limpiamos el user selected para que podamos escoger otro
-     // this.userSelected = new User();
     })
     
   }
@@ -91,12 +97,14 @@ export class UserAppComponent implements OnInit{
     this.sharingDate.idUserEventEmmiter.subscribe(id => {
           //creamos otra lista la cual filtra y si encuentra un id con el que se pasa en el metodo remove este lo excluye 
     //y crea una lista nueva sin ese id pasa todos los distintos al id buscado
-    this.users = this.users.filter(user => user.id != id);
+    this.service.remove(id).subscribe(() => {
+      this.users = this.users.filter(user => user.id != id);
+    })
     //usamos router para rediriir con navigate a usercreate ya que no se puede ir directo y ya con skiplocation retornamos a la pagina que si queremos ir
     this.router.navigate(['/users/create'], {skipLocationChange: true}).then(() => {
       //y aqui volvemos a redirigir a users
-      this.router.navigate(['/users'], {state: {users : this.users}})
-    });
+      this.router.navigate(['/users'], {state: {users: this.users}})
+    })
     })
   }
 

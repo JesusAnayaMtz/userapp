@@ -76,8 +76,9 @@
                   }
                 </div>
                 <div>
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="limpiarFormulario(userForm)">Limpiar</button>
-                  <button type="submit" class="btn btn-primary" (click)="onSubmit(userForm)" [disabled]="userForm.invalid">{{(user.id > 0)? 'Actualizar' : 'Guardar'}}</button>
+                  <button type="button" class="btn btn-primary mx-1" [routerLink]="['/users']">Cerrar</button>
+                  <button type="button" class="btn btn-secondary mx-1" (click)="limpiarFormulario(userForm)">Limpiar</button>
+                  <button type="submit" class="btn btn-primary mx-1" (click)="onSubmit(userForm)" [disabled]="userForm.invalid">{{(user.id > 0)? 'Actualizar' : 'Guardar'}}</button>
               </div>
               </form>
             </div>
