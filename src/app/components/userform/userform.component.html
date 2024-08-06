@@ -7,30 +7,42 @@
               <form (ngSubmit)="onSubmit(userForm)"  #userForm="ngForm">
                 <div class="mb-3">
                   <label class="col-form-label">Nombre:</label>
-                  <input placeholder="Nombre" name="name" [(ngModel)]="user.name" class="form-control" required #name="ngModel">
-                  @if(name.invalid && (name.dirty || name.touched)){
+                  <input placeholder="Nombre" name="name" [(ngModel)]="user.name" class="form-control" #name="ngModel"> <!--required-->
+                  @if (errors?.name) {
+                    <div class="text-danger">{{errors.name}}</div>
+                  }
+
+                 <!--  @if(name.invalid && (name.dirty || name.touched)){
                     @if(name.errors!['required']){
                       <div class="text-danger">
                         Nombre es requerido
                       </div>
                     }
-                  }
+                  } -->
                 </div>
                 <div class="mb-3">
                   <label class="col-form-label">Apellido:</label>
-                  <input placeholder="Apellido" name="lastname" [(ngModel)]="user.lastName" class="form-control" required #lastname="ngModel">
-                  @if(lastname.invalid && (lastname.dirty || lastname.touched)){
+                  <input placeholder="Apellido" name="lastname" [(ngModel)]="user.lastName" class="form-control"  #lastname="ngModel"> <!--required-->
+                  @if (errors?.lastName) {
+                    <div class="text-danger">{{errors.lastName}}</div>
+                  }
+
+                  <!-- @if(lastname.invalid && (lastname.dirty || lastname.touched)){
                     @if(lastname.errors!['required']){
                       <div class="text-danger">
                         Apellido es requerido
                       </div>
                     }
-                  }
+                  } -->
                 </div>
                 <div class="mb-3">
                   <label class="col-form-label">Email:</label>
-                  <input type="email" placeholder="email@email.com" name="email" [(ngModel)]="user.email" class="form-control" required email #email="ngModel">
-                  @if(email.invalid && (email.dirty || email.touched)){
+                  <input type="email" placeholder="email@email.com" name="email" [(ngModel)]="user.email" class="form-control"  #email="ngModel"> <!--required email-->
+                  @if (errors?.email) {
+                    <div class="text-danger">{{errors.email}}</div>
+                  }
+
+                  <!-- @if(email.invalid && (email.dirty || email.touched)){
                     @if(email.errors!['required']){
                       <div class="text-danger">
                         Email es requerido
@@ -41,12 +53,16 @@
                         Email no tiene el formato correcto
                       </div>
                     }
-                  }
+                  } -->
                 </div>
                 <div class="mb-3">
                   <label class="col-form-label">Nombre Usuario:</label>
-                  <input type="text" placeholder="Nombre De Usuario" name="username" [(ngModel)]="user.userName" class="form-control" required minlength="4" #username="ngModel">
-                  @if(username.invalid && (username.dirty || username.touched)){
+                  <input type="text" placeholder="Nombre De Usuario" name="username" [(ngModel)]="user.userName" class="form-control"  #username="ngModel"> <!--required minlength="4"-->
+                  @if (errors?.userName) {
+                    <div class="text-danger">{{errors.userName}}</div>
+                  }
+                  
+                  <!-- @if(username.invalid && (username.dirty || username.touched)){
                     @if(username.errors!['required']){
                       <div class="text-danger">
                         Nombre de usuario es requerido
@@ -57,12 +73,16 @@
                         Nombre de usuario debe tener minimo 4 caracteres
                       </div>
                     }
-                  }
+                  } -->
                 </div>
                 <div class="mb-3">
                   <label class="col-form-label">Contraseña:</label>
-                  <input type="password" placeholder="Contraseña" name="password" [(ngModel)]="user.password" class="form-control" required minlength="6" #password="ngModel">
-                  @if(password.invalid && (password.dirty || password.touched)){
+                  <input type="password" placeholder="Contraseña" name="password" [(ngModel)]="user.password" class="form-control"  #password="ngModel"> <!--required minlength="6"-->
+                  @if (errors?.password) {
+                    <div class="text-danger">{{errors.password}}</div>
+                  }
+                  
+                 <!--  @if(password.invalid && (password.dirty || password.touched)){
                     @if(password.errors!['required']){
                       <div class="text-danger">
                         Password es requerido
@@ -73,12 +93,12 @@
                         PAssword debe tener minimo 6 caracteres
                       </div>
                     }
-                  }
+                  } -->
                 </div>
                 <div>
                   <button type="button" class="btn btn-primary mx-1" [routerLink]="['/users']">Cerrar</button>
                   <button type="button" class="btn btn-secondary mx-1" (click)="limpiarFormulario(userForm)">Limpiar</button>
-                  <button type="submit" class="btn btn-primary mx-1" (click)="onSubmit(userForm)" [disabled]="userForm.invalid">{{(user.id > 0)? 'Actualizar' : 'Guardar'}}</button>
+                   <button type="submit" class="btn btn-primary mx-1" (click)="onSubmit(userForm)" >{{(user.id > 0)? 'Actualizar' : 'Guardar'}}</button>  <!--[disabled]="userForm.invalid" -->
               </div>
               </form>
             </div>

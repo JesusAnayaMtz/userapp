@@ -22,6 +22,8 @@ export class UserformComponent implements OnInit{
   //tambien se usa para recibir el user que viene del editar
   user: User;
 
+  errors: any = {};
+
 
   
   //inicializamos en el constructor el user e inyectamos los sharindata correpondientes al evnet emiter a ocupar
@@ -29,6 +31,8 @@ export class UserformComponent implements OnInit{
     this.user = new User();
   }
   ngOnInit(): void {
+    //escuchamos el evente emiiter error que viene del app component
+    this.sharinData.errorsUserFormEmmiter.subscribe(errors => this.errors = errors)
     //ecuchamos o recibimos el event que viene del user app seria el retorno de cuando emitimos el id
     //nota importarte la suscripcion deve siempore esta al inicio 
     //this.sharinData.selectUserEventEmmiter.subscribe(user => this.user = user);
@@ -45,12 +49,12 @@ export class UserformComponent implements OnInit{
 
   //con este metodo al darle guardar enviara el evento con el user creado al padre(user-app)
   onSubmit(userForm: NgForm): void {
-    if(userForm.valid){
+    //if(userForm.valid){
       this.sharinData.newUserEventeEmmiter.emit(this.user);
     console.log(this.user);
-    }
-    userForm.reset();
-    userForm.resetForm();
+   // }
+    // userForm.reset();
+    // userForm.resetForm();
   }
 
 

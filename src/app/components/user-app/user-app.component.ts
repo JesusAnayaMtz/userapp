@@ -58,7 +58,7 @@ export class UserAppComponent implements OnInit{
       //validamos que el id sea mayor a 0
       if(user.id > 0){
         //utilizamor el service para llamar al back y nos suscribimos
-        this.service.update(user).subscribe(userUpdate => {
+        this.service.update(user).subscribe({next: (userUpdate) => {
                   //obtenemos la lista de usuarios y con map nos permite modificar un arreglo y crear un nuevo arreglo ya con los datos modificados
         // y con una exprecion lamda y operador ternario  validamos que el usuario exista y sea igual a uno del arreglo y los modificamos
           this.users = this.users.map(u => (u.id == userUpdate.id) ? {... userUpdate} : u); 
@@ -70,10 +70,18 @@ export class UserAppComponent implements OnInit{
           showConfirmButton: false,
           timer: 2000
         });
-        })
+        },
+        error: (err)=>{
+          //console.log(err.error)
+          if(err.status == 400){
+            this.sharingDate.errorsUserFormEmmiter.emit(err.error);
+          }
+        }}
+      )
       }else{
         //lamamos al service y al metodo create y nos suscribimos y creamos un nuevo usuario
-        this.service.create(user).subscribe(userNew => {
+        this.service.create(user).subscribe( {
+          next: userNew =>{
           //creamos una nueva lista dispersando los datos y le agregamos el nuevo usuario
           this.users = [... this.users, {... userNew}];
           //aqui tambien al crear un usuario nos redirige a otro
@@ -85,7 +93,15 @@ export class UserAppComponent implements OnInit{
         showConfirmButton: false,
         timer: 2000
       });
-        })
+        },
+      error: (err) => {
+        //console.log(err.error)
+        if(err.status == 400){
+          this.sharingDate.errorsUserFormEmmiter.emit(err.error);
+        }
+        
+      }
+      })
       }
     })
     

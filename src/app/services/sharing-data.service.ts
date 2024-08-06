@@ -18,6 +18,9 @@ private _findUSerByIDEventEmmiter = new EventEmitter();
 
 private _selectUserEventEmmiter = new EventEmitter();
 
+private _errorsUserFormEmmiter = new EventEmitter();
+
+
   constructor() { }
 
   get newUserEventeEmmiter(): EventEmitter<User>{
@@ -35,4 +38,9 @@ private _selectUserEventEmmiter = new EventEmitter();
   get selectUserEventEmmiter(){
     return this._selectUserEventEmmiter;
   }
+
+  get errorsUserFormEmmiter(){
+    return this._errorsUserFormEmmiter;
+  }
+
 }
