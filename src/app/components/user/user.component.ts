@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { User } from '../../models/user';
 import Swal from 'sweetalert2'
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { SharingDataService } from '../../services/sharing-data.service';
 
@@ -21,7 +21,7 @@ export class UserComponent implements OnInit{
 
 
 //dentro del cnstructor capturamos los users que vienen del padre y que pasan por navbar y los inyectamos con router
-constructor(private router: Router, private service: UserService, private sharinData: SharingDataService){
+constructor(private router: Router, private service: UserService, private sharinData: SharingDataService, private route: ActivatedRoute){
   if(this.router.getCurrentNavigation()?.extras.state){
     this.users = this.router.getCurrentNavigation()?.extras.state!['users'];
   }
@@ -29,7 +29,16 @@ constructor(private router: Router, private service: UserService, private sharin
   ngOnInit(): void {
     //estpo es  para optimizar y solo consulte el find all de vez en cuando sea igual a 0 null un undefined lo bsque en la base d datos y si no lo obtenga del state de angular
     if(this.users == undefined || this.users == null || this.users.length == 0){
-      this.service.findAll().subscribe(users => this.users =users)
+      //this.service.findAll().subscribe(users => this.users =users)
+      //pasamos la pagina con route que se agrego en el constrictor y con una funciona flecha creamos una constante la cual sera la pagina
+    this.route.paramMap.subscribe(params => {
+      const page = +(params.get('page') || '0')
+      //llamamos al metodo find all pageable
+      this.service.findAllPageable(page).subscribe(pageable => {this.users = pageable.content as User[]
+        //emitimos los user para que se puedan usar en user app component para la paginacion
+        this.sharinData.pageUsersEventEmmiter.emit(this.users);
+      })
+    })
     }
     
   }

@@ -4,7 +4,7 @@ import { UserService } from '../../services/user.service';
 import { UserComponent } from '../user/user.component';
 import { UserformComponent } from '../userform/userform.component';
 import Swal from 'sweetalert2';
-import { Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { routes } from '../../app.routes';
@@ -28,17 +28,29 @@ export class UserAppComponent implements OnInit{
  // userSelected: User;
 
   //inyectamos el sharin data service
-  constructor(private service: UserService, private sharingDate: SharingDataService,private router: Router){
+  constructor(private service: UserService, private sharingDate: SharingDataService,private router: Router, private route: ActivatedRoute){
    // this.userSelected = new User();
   }
   ngOnInit(): void {
+    //pasamos la pagina con route que se agrego en el constrictor y con una funciona flecha creamos una constante la cual sera la pagina
+    // this.route.paramMap.subscribe(params => {
+    //   const page = +(params.get('page') || '0')
+    //   //llamamos al metodo find all pageable y convertimos a un arreglo de usuarios
+    //   this.service.findAllPageable(page).subscribe(pageable => this.users = pageable.content as User[])
+    // })
     //implementamos el metodo findall y nos suscrbimos ya que es un observable y con funcion flecha pasamos los usuarios y se los pasamos al areglo users
-    this.service.findAll().subscribe(users => this.users = users)
+    //this.service.findAll().subscribe(users => this.users = users)
+    
     this.addUser();
     this.removeUser();
    // this.setSeletedUser();
    this.findUserById();
-    
+    this.pageUserEvent();
+  }
+
+  //se ocupa para obtener el ultimo rango de paginacion y sus usuarios para ssi poder editar o agregar uno nuevo y estos bviene del user.component
+  pageUserEvent(){
+    this.sharingDate.pageUsersEventEmmiter.subscribe(users => this.users = users);
   }
 
   //creamos este metodo para poder buscar al usuarios y lo vamos a emitir el id con eventemiter

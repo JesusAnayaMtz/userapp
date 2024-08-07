@@ -21,8 +21,14 @@ export class UserService {
   //metodo para obtener todos
   findAll(): Observable<User[]> {
    // return of(this.users)
-   return this.http.get(this.url).pipe(map((users: any) => users as User[]),);
+   return this.http.get<User[]>(this.url)
   }
+
+  //metodo para obtener todos por pageable
+  findAllPageable(page: number): Observable<any> {
+    // return of(this.users)
+    return this.http.get<any>(`${this.url}/page/${page}`);
+   }
 
   findById(id: number): Observable<User>{
     return this.http.get<User>(`${this.url}/${id}`);
@@ -39,4 +45,6 @@ export class UserService {
   remove(id: number): Observable<void>{
     return this.http.delete<void>(`${this.url}/${id}`);
   }
+
+
 }
