@@ -4,11 +4,12 @@ import Swal from 'sweetalert2'
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { SharingDataService } from '../../services/sharing-data.service';
+import { PaginatorComponent } from '../paginator/paginator.component';
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, PaginatorComponent],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
@@ -18,12 +19,17 @@ export class UserComponent implements OnInit{
   //colocamos input ya que los usarios vienen del padre que es user-app se tiene que importar este componente en el padre
   users: User[] = [];
 
+  paginator: any = {};
+
+  pageUrl: string = '/users/page'
+
 
 
 //dentro del cnstructor capturamos los users que vienen del padre y que pasan por navbar y los inyectamos con router
 constructor(private router: Router, private service: UserService, private sharinData: SharingDataService, private route: ActivatedRoute){
   if(this.router.getCurrentNavigation()?.extras.state){
     this.users = this.router.getCurrentNavigation()?.extras.state!['users'];
+    this.paginator = this.router.getCurrentNavigation()?.extras.state!['paginator'];
   }
 }
   ngOnInit(): void {
@@ -33,10 +39,12 @@ constructor(private router: Router, private service: UserService, private sharin
       //pasamos la pagina con route que se agrego en el constrictor y con una funciona flecha creamos una constante la cual sera la pagina
     this.route.paramMap.subscribe(params => {
       const page = +(params.get('page') || '0')
-      //llamamos al metodo find all pageable
-      this.service.findAllPageable(page).subscribe(pageable => {this.users = pageable.content as User[]
+      //llamamos al metodo find all pageable para obtener los user y lo comvertinos a un arreglo de usuarios
+      this.service.findAllPageable(page).subscribe(pageable => {this.users = pageable.content as User[];
+        //con esto obtenemos todos los elementos que regresa ep pageable en json esto nos servira para armar nuestro paginador
+        this.paginator = pageable;
         //emitimos los user para que se puedan usar en user app component para la paginacion
-        this.sharinData.pageUsersEventEmmiter.emit(this.users);
+        this.sharinData.pageUsersEventEmmiter.emit({users: this.users, paginator : this.paginator});
       })
     })
     }

@@ -14,4 +14,5 @@ export class NavbarComponent {
   //le pasamos el arreglo de users que viene del componente padre que es user app y se lo mostramos al html poer medio de un state
   @Input() users: User[] = [];
 
+  @Input() paginator = {};
 }

@@ -24,6 +24,8 @@ export class UserAppComponent implements OnInit{
   //creamos nuetsro arreglo de usuarios
   users: User[] = [];
 
+  paginator: any = {};
+
   //atributo para editar user
  // userSelected: User;
 
@@ -50,7 +52,10 @@ export class UserAppComponent implements OnInit{
 
   //se ocupa para obtener el ultimo rango de paginacion y sus usuarios para ssi poder editar o agregar uno nuevo y estos bviene del user.component
   pageUserEvent(){
-    this.sharingDate.pageUsersEventEmmiter.subscribe(users => this.users = users);
+    this.sharingDate.pageUsersEventEmmiter.subscribe(pageable => {
+      this.users = pageable.users;
+      this.paginator = pageable.users
+    });
   }
 
   //creamos este metodo para poder buscar al usuarios y lo vamos a emitir el id con eventemiter
@@ -74,7 +79,7 @@ export class UserAppComponent implements OnInit{
                   //obtenemos la lista de usuarios y con map nos permite modificar un arreglo y crear un nuevo arreglo ya con los datos modificados
         // y con una exprecion lamda y operador ternario  validamos que el usuario exista y sea igual a uno del arreglo y los modificamos
           this.users = this.users.map(u => (u.id == userUpdate.id) ? {... userUpdate} : u); 
-          this.router.navigate(['/users'], {state: {users: this.users}})
+          this.router.navigate(['/users'], {state: {users: this.users, paginator : this.paginator}})
         Swal.fire({
           position: "center",
           icon: "success",
@@ -97,7 +102,7 @@ export class UserAppComponent implements OnInit{
           //creamos una nueva lista dispersando los datos y le agregamos el nuevo usuario
           this.users = [... this.users, {... userNew}];
           //aqui tambien al crear un usuario nos redirige a otro
-      this.router.navigate(['/users'], {state: {users: this.users}})
+      this.router.navigate(['/users'], {state: {users: this.users, paginator : this.paginator}})
       Swal.fire({
         position: "center",
         icon: "success",
@@ -131,7 +136,7 @@ export class UserAppComponent implements OnInit{
     //usamos router para rediriir con navigate a usercreate ya que no se puede ir directo y ya con skiplocation retornamos a la pagina que si queremos ir
     this.router.navigate(['/users/create'], {skipLocationChange: true}).then(() => {
       //y aqui volvemos a redirigir a users
-      this.router.navigate(['/users'], {state: {users: this.users}})
+      this.router.navigate(['/users'], {state: {users: this.users, paginator : this.paginator}})
     })
     })
   }
