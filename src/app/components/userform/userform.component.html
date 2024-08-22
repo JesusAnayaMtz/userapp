@@ -57,9 +57,9 @@
                 </div>
                 <div class="mb-3">
                   <label class="col-form-label">Nombre Usuario:</label>
-                  <input type="text" placeholder="Nombre De Usuario" name="username" [(ngModel)]="user.userName" class="form-control"  #username="ngModel"> <!--required minlength="4"-->
-                  @if (errors?.userName) {
-                    <div class="text-danger">{{errors.userName}}</div>
+                  <input type="text" placeholder="Nombre De Usuario" name="username" [(ngModel)]="user.username" class="form-control"  #username="ngModel"> <!--required minlength="4"-->
+                  @if (errors?.username) {
+                    <div class="text-danger">{{errors.username}}</div>
                   }
                   
                   <!-- @if(username.invalid && (username.dirty || username.touched)){

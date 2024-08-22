@@ -22,6 +22,8 @@ private _errorsUserFormEmmiter = new EventEmitter();
 
 private _pageUsersEventEmmiter = new EventEmitter();
 
+private _handlerLoginEventEmitter = new EventEmitter();
+
 
   constructor() { }
 
@@ -47,6 +49,10 @@ private _pageUsersEventEmmiter = new EventEmitter();
 
   get errorsUserFormEmmiter(){
     return this._errorsUserFormEmmiter;
+  }
+
+  get handlerLoginEventEmitter(){
+    return this._handlerLoginEventEmitter;
   }
 
 }

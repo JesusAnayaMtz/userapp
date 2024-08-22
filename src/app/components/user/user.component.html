@@ -24,7 +24,7 @@
                     <td>{{user.name}}</td>
                     <td>{{user.lastName}}</td>
                     <td>{{user.email}}</td>
-                    <td>{{user.userName}}</td>
+                    <td>{{user.username}}</td>
                     <td><button class="btn btn-warning" [routerLink]="['/users/edit', user.id]">Editar</button></td>
                     <td><button class="btn btn-danger" (click)="onRemoveUSer(user.id)">Eliminar</button></td>
                 </tr>

@@ -23,8 +23,6 @@ export class UserComponent implements OnInit{
 
   pageUrl: string = '/users/page'
 
-
-
 //dentro del cnstructor capturamos los users que vienen del padre y que pasan por navbar y los inyectamos con router
 constructor(private router: Router, private service: UserService, private sharinData: SharingDataService, private route: ActivatedRoute){
   if(this.router.getCurrentNavigation()?.extras.state){
@@ -32,6 +30,7 @@ constructor(private router: Router, private service: UserService, private sharin
     this.paginator = this.router.getCurrentNavigation()?.extras.state!['paginator'];
   }
 }
+
   ngOnInit(): void {
     //estpo es  para optimizar y solo consulte el find all de vez en cuando sea igual a 0 null un undefined lo bsque en la base d datos y si no lo obtenga del state de angular
     if(this.users == undefined || this.users == null || this.users.length == 0){
@@ -48,7 +47,6 @@ constructor(private router: Router, private service: UserService, private sharin
       })
     })
     }
-    
   }
 
   //creamos el metodo que se usara para eliminar el cual se emitira con el event emiter

@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
-import { UserComponent } from '../user/user.component';
-import { UserformComponent } from '../userform/userform.component';
 import Swal from 'sweetalert2';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SharingDataService } from '../../services/sharing-data.service';
-import { routes } from '../../app.routes';
-import { state } from '@angular/animations';
+import { LoginService } from '../../services/login.service';
 
 @Component({
   selector: 'app-user-app',
@@ -30,7 +27,7 @@ export class UserAppComponent implements OnInit{
  // userSelected: User;
 
   //inyectamos el sharin data service
-  constructor(private service: UserService, private sharingDate: SharingDataService,private router: Router, private route: ActivatedRoute){
+  constructor(private service: UserService, private sharingData: SharingDataService,private router: Router, private route: ActivatedRoute, private loginService: LoginService){
    // this.userSelected = new User();
   }
   ngOnInit(): void {
@@ -48,11 +45,35 @@ export class UserAppComponent implements OnInit{
    // this.setSeletedUser();
    this.findUserById();
     this.pageUserEvent();
+    this.handlerLogin();
   }
+
+    //metodo para recibir os datos que vienen del eventemiiter del login
+    handlerLogin() {
+      this.sharingData.handlerLoginEventEmitter.subscribe(({ username, password }) => {
+        console.log(username + ' ' + password);
+  
+        this.loginService.loginUser({ username, password }).subscribe({
+          next: response => {
+            const token = response.token;
+            console.log(token);
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            console.log(payload);
+          },
+          error: error => {
+            if (error.status == 401) {
+              Swal.fire('Error en el Login', error.error.message, 'error')
+            } else {
+              throw error;
+            }
+          }
+        })
+      })
+    }
 
   //se ocupa para obtener el ultimo rango de paginacion y sus usuarios para ssi poder editar o agregar uno nuevo y estos bviene del user.component
   pageUserEvent(){
-    this.sharingDate.pageUsersEventEmmiter.subscribe(pageable => {
+    this.sharingData.pageUsersEventEmmiter.subscribe(pageable => {
       this.users = pageable.users;
       this.paginator = pageable.users
     });
@@ -61,17 +82,19 @@ export class UserAppComponent implements OnInit{
   //creamos este metodo para poder buscar al usuarios y lo vamos a emitir el id con eventemiter
   findUserById(): void{
     //escuchamos el evente emitter que viene del form el cual recibe el id 
-    this.sharingDate.findUSerByIDEventEmmiter.subscribe(id => {
+    this.sharingData.findUSerByIDEventEmmiter.subscribe(id => {
       const user = this.users.find(user => user.id == id);
 
       //volvemos a mandar en el event emiter el usuario al user form
-      this.sharingDate.selectUserEventEmmiter.emit(user);
+      this.sharingData.selectUserEventEmmiter.emit(user);
     })
   }
 
+
+
   //este evento se usara para recibir el usuario nuevo que viene del modal userform
   addUser(){
-    this.sharingDate.newUserEventeEmmiter.subscribe(user =>{
+    this.sharingData.newUserEventeEmmiter.subscribe(user =>{
       //validamos que el id sea mayor a 0
       if(user.id > 0){
         //utilizamor el service para llamar al back y nos suscribimos
@@ -91,7 +114,7 @@ export class UserAppComponent implements OnInit{
         error: (err)=>{
           //console.log(err.error)
           if(err.status == 400){
-            this.sharingDate.errorsUserFormEmmiter.emit(err.error);
+            this.sharingData.errorsUserFormEmmiter.emit(err.error);
           }
         }}
       )
@@ -114,7 +137,7 @@ export class UserAppComponent implements OnInit{
       error: (err) => {
         //console.log(err.error)
         if(err.status == 400){
-          this.sharingDate.errorsUserFormEmmiter.emit(err.error);
+          this.sharingData.errorsUserFormEmmiter.emit(err.error);
         }
         
       }
@@ -127,7 +150,7 @@ export class UserAppComponent implements OnInit{
 
 
   removeUser(): void{
-    this.sharingDate.idUserEventEmmiter.subscribe(id => {
+    this.sharingData.idUserEventEmmiter.subscribe(id => {
           //creamos otra lista la cual filtra y si encuentra un id con el que se pasa en el metodo remove este lo excluye 
     //y crea una lista nueva sin ese id pasa todos los distintos al id buscado
     this.service.remove(id).subscribe(() => {
